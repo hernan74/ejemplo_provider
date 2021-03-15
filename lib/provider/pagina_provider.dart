@@ -17,7 +17,6 @@ class PaginaProvider extends ChangeNotifier {
   void cargarUsuarios() async {
     if (_usuarioList.isEmpty) {
       _usuarioList.addAll(await DBProvider.db.buscarTodos());
-      print(_usuarioList.length);
       if (_usuarioList.isNotEmpty) notifyListeners();
     }
   }
