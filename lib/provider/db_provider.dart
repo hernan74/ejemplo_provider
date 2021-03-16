@@ -67,6 +67,15 @@ class DBProvider {
     return res.isEmpty ? UsuarioModel.fromJson(res.first) : null;
   }
 
+  Future<UsuarioModel> buscarPorEmail(String email) async {
+    //Obtiene la instancia de la base de datos
+    final Database db = await database;
+    final res =
+        await db.query(_usuarioTableName, where: 'email=?', whereArgs: [email]);
+
+    return res.isNotEmpty ? UsuarioModel.fromJson(res.first) : null;
+  }
+
   Future<List<UsuarioModel>> buscarTodos() async {
     //Obtiene la instancia de la base de datos
     final Database db = await database;

@@ -6,6 +6,19 @@ class PaginaProvider extends ChangeNotifier {
   int _pagina = 0;
   bool _seleccion = false;
 
+  PageController _pageController = new PageController();
+
+  int get paginaActual => _pagina;
+
+  PageController get pageController => _pageController;
+
+  set paginaActual(int pagina) {
+    this._pagina = pagina;
+    _pageController.animateToPage(_pagina,
+        duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+    notifyListeners();
+  }
+
   final List<UsuarioModel> _usuarioList = [];
 
   UsuarioModel _usuario = new UsuarioModel();
@@ -25,13 +38,8 @@ class PaginaProvider extends ChangeNotifier {
 
   bool get seleccion => _seleccion;
 
-  void modificar(UsuarioModel usuario) {
+  void seleccionarUsuario(UsuarioModel usuario) {
     _usuario = usuario;
-  }
-
-  set pagina(int pagina) {
-    _pagina = pagina;
-    notifyListeners();
   }
 
   set seleccion(bool seleccion) {
@@ -39,22 +47,29 @@ class PaginaProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void eliminar() async {
-    await DBProvider.db.borrarPorId(_usuario.id);
-    _usuarioList.remove(_usuario);
+  void eliminar(UsuarioModel model) async {
+    print(model.id);
+    await DBProvider.db.borrarPorId(model.id);
+    _usuarioList.remove(model);
 
     _seleccion = false;
     _usuario = new UsuarioModel();
     notifyListeners();
   }
 
+  Future<bool> verificarEmail(String email) async {
+    final res = await DBProvider.db.buscarPorEmail(email);
+    return res == null ? false : true;
+  }
+
   void guardar() async {
     //Si seleccion es true modifica el registro
     if (_seleccion && _usuario.id != null) {
       await DBProvider.db.modificar(_usuario);
-      _usuarioList[_usuario.id] = _usuario;
+      _usuarioList.clear();
+      _usuarioList.addAll(await DBProvider.db.buscarTodos());
     } else {
-      await DBProvider.db.crearNuevo(_usuario);
+      _usuario.id = await DBProvider.db.crearNuevo(_usuario);
       _usuarioList.add(_usuario);
     }
 

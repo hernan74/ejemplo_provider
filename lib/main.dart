@@ -1,3 +1,4 @@
+import 'package:ejemplo_provider/pages/ejemplo_stream.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ejemplo_provider/pages/home.dart';
@@ -9,6 +10,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => PaginaProvider()),
@@ -16,8 +18,14 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Provider',
-        home: HomePage(),
-      ),
+        initialRoute: '/',
+        routes: {
+          '/'     : (_) => HomePage(), 
+          'stream': (_) => StreamPage()},
+      theme: ThemeData(
+            primaryColor:Colors.purple.shade500 ,
+           
+        ), ),
     );
   }
 }
