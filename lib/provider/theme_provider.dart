@@ -5,6 +5,7 @@ class ThemeProvider with ChangeNotifier {
   static final String _colorPrimarioLight = '#3700B3';
   static final String _colorSurfaceLight = '#FFFFFF';
   static final String _colorLetraLight = '#121212';
+  static final String _colorErrorLight = '#CF6679';
 
   static ThemeData lightTheme = ThemeData(
       brightness: Brightness.light,
@@ -14,7 +15,10 @@ class ThemeProvider with ChangeNotifier {
       secondaryHeaderColor: HexColor.fromHex(_colorPrimarioLight),
       accentColor: HexColor.fromHex(_colorLetraLight),
       cardColor: HexColor.fromHex(_colorSurfaceLight),
+      errorColor: HexColor.fromHex(_colorErrorLight),
       selectedRowColor: HexColor.fromHex(_colorSurfaceLight),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: HexColor.fromHex(_colorPrimarioLight)),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(
@@ -34,6 +38,8 @@ class ThemeProvider with ChangeNotifier {
       errorColor: HexColor.fromHex(_colorErrorDark),
       accentColor: HexColor.fromHex(_colorLetraDark),
       cardColor: HexColor.fromHex(_colorSurfaceDark),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: HexColor.fromHex(_colorLetraDark)),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(

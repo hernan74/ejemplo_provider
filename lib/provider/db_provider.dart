@@ -42,20 +42,26 @@ class DBProvider {
     });
   }
 
-  Future<int> crearNuevo(UsuarioModel nuevo) async {
-    //Obtiene la instancia de la base de datos
+  Future<dynamic> crearNuevo(UsuarioModel nuevo) async {
+    final resp = await buscarPorEmail(nuevo.email);
+
+    if (resp.isNotEmpty) return 'Existe un usuario con el mismo email';
+
     final Database db = await database;
-    final id = await db.insert('$_usuarioTableName', nuevo.toJson());
-    print(id);
-    return id;
+    await db.insert('$_usuarioTableName', nuevo.toJson());
+
+    return true;
   }
 
-  Future<int> modificar(UsuarioModel modificar) async {
+  Future<dynamic> modificar(UsuarioModel modificar) async {
+    final resp = await buscarPorEmail(modificar.email);
     //Obtiene la instancia de la base de datos
+    if (resp.length >0) return 'Existe un otro usuario con el mismo email';
+
     final Database db = await database;
-    final id = await db.update('$_usuarioTableName', modificar.toJson(),
+    await db.update('$_usuarioTableName', modificar.toJson(),
         where: 'id=?', whereArgs: [modificar.id]);
-    return id;
+    return true;
   }
 
   Future<UsuarioModel> buscarPorId(int id) async {
@@ -67,13 +73,15 @@ class DBProvider {
     return res.isEmpty ? UsuarioModel.fromJson(res.first) : null;
   }
 
-  Future<UsuarioModel> buscarPorEmail(String email) async {
+  Future<List<UsuarioModel>> buscarPorEmail(String email) async {
     //Obtiene la instancia de la base de datos
     final Database db = await database;
     final res =
         await db.query(_usuarioTableName, where: 'email=?', whereArgs: [email]);
 
-    return res.isNotEmpty ? UsuarioModel.fromJson(res.first) : null;
+    return res.isNotEmpty
+        ? res.map((e) => UsuarioModel.fromJson(e)).toList()
+        : [];
   }
 
   Future<List<UsuarioModel>> buscarTodos() async {

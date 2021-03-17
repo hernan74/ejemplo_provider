@@ -1,14 +1,21 @@
-import 'package:ejemplo_provider/pages/ejemplo_stream.dart';
-import 'package:ejemplo_provider/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
-
-import 'package:ejemplo_provider/pages/home.dart';
 import 'package:provider/provider.dart';
+
+import 'package:ejemplo_provider/pages/ejemplo_stream.dart';
+import 'package:ejemplo_provider/provider/preferencia_usuario.dart';
+import 'package:ejemplo_provider/provider/theme_provider.dart';
+import 'package:ejemplo_provider/pages/home.dart';
 import 'package:ejemplo_provider/provider/pagina_provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = new PreferenciasUsuario();
+  await prefs.initPrefts();
   runApp(ChangeNotifierProvider<ThemeProvider>(
-      create: (_) => ThemeProvider(ThemeProvider.darkTheme), child: MyApp()));
+      create: (_) => ThemeProvider(prefs.colorSegundario
+          ? ThemeProvider.darkTheme
+          : ThemeProvider.lightTheme),
+      child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

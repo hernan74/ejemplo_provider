@@ -123,15 +123,13 @@ class Pagina2 extends StatelessWidget {
       onPressed: () async {
         FocusScope.of(context).requestFocus(FocusNode());
         if (_validar(context, paginaProvider.nuevoUsuario)) {
-          if (!paginaProvider.seleccion &&
-              await paginaProvider
-                  .verificarEmail(paginaProvider.nuevoUsuario.email)) {
-            mostrarSnackBar(context: context, msj: 'El email debe ser unico',isError: true);
-            return;
+          dynamic resp = await paginaProvider.guardar();
+          if (resp != true)
+            mostrarSnackBar(context: context, msj: resp, isError: true);
+          else {
+            mostrarSnackBar(context: context, msj: 'Se guardo el registro');
+            paginaProvider.paginaActual = 0;
           }
-          paginaProvider.guardar();
-          mostrarSnackBar(context: context, msj: 'Se guardo el registro');
-          paginaProvider.paginaActual = 0;
         }
       },
       child: Row(
@@ -143,11 +141,12 @@ class Pagina2 extends StatelessWidget {
 
   bool _validar(BuildContext context, UsuarioModel usuarioModel) {
     if (usuarioModel.usuario.isEmpty) {
-      mostrarSnackBar(context: context, msj: 'Ingrese un Nombre',isError: true);
+      mostrarSnackBar(
+          context: context, msj: 'Ingrese un Nombre', isError: true);
       return false;
     }
     if (usuarioModel.email.isEmpty) {
-      mostrarSnackBar(context: context, msj: 'Ingrese un Email',isError: true);
+      mostrarSnackBar(context: context, msj: 'Ingrese un Email', isError: true);
       return false;
     }
 

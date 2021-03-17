@@ -1,6 +1,8 @@
-import 'package:ejemplo_provider/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:ejemplo_provider/provider/preferencia_usuario.dart';
+import 'package:ejemplo_provider/provider/theme_provider.dart';
 import 'package:ejemplo_provider/model/usuario_model.dart';
 import 'package:ejemplo_provider/provider/pagina_provider.dart';
 import 'package:ejemplo_provider/widget/crear_snack.dart';
@@ -10,18 +12,20 @@ class Pagina1 extends StatelessWidget {
   Widget build(BuildContext context) {
     final paginaProvider = Provider.of<PaginaProvider>(context, listen: false);
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final prefs = new PreferenciasUsuario();
+
     return Scaffold(
-      
       appBar: AppBar(
         title: Text('Provider'),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.color_lens),
               onPressed: () {
+                final valor =
+                    themeProvider.getTheme() == ThemeProvider.lightTheme;
+                prefs.colorSegundario = valor;
                 themeProvider.setTheme(
-                    themeProvider.getTheme() != ThemeProvider.lightTheme
-                        ? ThemeProvider.lightTheme
-                        : ThemeProvider.darkTheme);
+                    valor ? ThemeProvider.darkTheme : ThemeProvider.lightTheme);
               }),
           IconButton(
               icon: Icon(Icons.delete),
@@ -40,6 +44,7 @@ class Pagina1 extends StatelessWidget {
                   child: _crearItem(context, i, paginaProvider.usuarioList[i]));
             }),
       ),
+      floatingActionButton: _crearFloatingActionButton(context),
     );
   }
 
@@ -129,5 +134,16 @@ class Pagina1 extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _crearFloatingActionButton(BuildContext context) {
+    final provider = Provider.of<PaginaProvider>(context);
+    return FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          provider.seleccionarUsuario(new UsuarioModel());
+          provider.seleccion = false;
+          provider.paginaActual=1;
+        });
   }
 }

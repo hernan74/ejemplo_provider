@@ -61,17 +61,21 @@ class PaginaProvider extends ChangeNotifier {
     return res == null ? false : true;
   }
 
-  void guardar() async {
+  Future<dynamic> guardar() async {
     _usuarioList.clear();
-
+    dynamic resp;
     if (_seleccion && _usuario.id != null) {
-      await DBProvider.db.modificar(_usuario);
+      resp = await DBProvider.db.modificar(_usuario);
     } else {
-      await DBProvider.db.crearNuevo(_usuario);
+      resp = await DBProvider.db.crearNuevo(_usuario);
     }
-    _usuario = new UsuarioModel();
-    _seleccion = false;
-    _pagina = 0;
+    if (resp == true) {
+      _usuario = new UsuarioModel();
+      _seleccion = false;
+      _pagina = 0;
+    }
+
+    return resp;
   }
 
   void borrarTodos() async {
