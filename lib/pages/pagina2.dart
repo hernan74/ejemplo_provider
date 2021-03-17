@@ -52,7 +52,7 @@ class Pagina2 extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            _crearIcono(),
+            _crearIcono(context),
             TextField(
               textCapitalization: TextCapitalization.words,
               controller: TextEditingController(text: usuario.usuario),
@@ -109,24 +109,24 @@ class Pagina2 extends StatelessWidget {
     );
   }
 
-  Widget _crearIcono() {
+  Widget _crearIcono(BuildContext context) {
     return Icon(
       Icons.account_circle_rounded,
-      color: Colors.purple,
+      color: Theme.of(context).secondaryHeaderColor,
       size: 150.0,
     );
   }
 
   ElevatedButton _guardar(BuildContext context, PaginaProvider paginaProvider) {
     return ElevatedButton(
-      style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(Colors.purple)),
+      style: Theme.of(context).elevatedButtonTheme.style,
       onPressed: () async {
         FocusScope.of(context).requestFocus(FocusNode());
         if (_validar(context, paginaProvider.nuevoUsuario)) {
-          if (!paginaProvider.seleccion&& await paginaProvider
-              .verificarEmail(paginaProvider.nuevoUsuario.email)) {
-            mostrarSnackBar(context: context, msj: 'El email debe ser unico');
+          if (!paginaProvider.seleccion &&
+              await paginaProvider
+                  .verificarEmail(paginaProvider.nuevoUsuario.email)) {
+            mostrarSnackBar(context: context, msj: 'El email debe ser unico',isError: true);
             return;
           }
           paginaProvider.guardar();
@@ -143,11 +143,11 @@ class Pagina2 extends StatelessWidget {
 
   bool _validar(BuildContext context, UsuarioModel usuarioModel) {
     if (usuarioModel.usuario.isEmpty) {
-      mostrarSnackBar(context: context, msj: 'Ingrese un Nombre');
+      mostrarSnackBar(context: context, msj: 'Ingrese un Nombre',isError: true);
       return false;
     }
     if (usuarioModel.email.isEmpty) {
-      mostrarSnackBar(context: context, msj: 'Ingrese un Email');
+      mostrarSnackBar(context: context, msj: 'Ingrese un Email',isError: true);
       return false;
     }
 

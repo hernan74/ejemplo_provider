@@ -1,23 +1,33 @@
+import 'package:ejemplo_provider/provider/theme_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ejemplo_provider/model/usuario_model.dart';
 import 'package:ejemplo_provider/provider/pagina_provider.dart';
 import 'package:ejemplo_provider/widget/crear_snack.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class Pagina1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paginaProvider = Provider.of<PaginaProvider>(context, listen: false);
-
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     return Scaffold(
+      
       appBar: AppBar(
         title: Text('Provider'),
         actions: <Widget>[
           IconButton(
+              icon: Icon(Icons.color_lens),
+              onPressed: () {
+                themeProvider.setTheme(
+                    themeProvider.getTheme() != ThemeProvider.lightTheme
+                        ? ThemeProvider.lightTheme
+                        : ThemeProvider.darkTheme);
+              }),
+          IconButton(
               icon: Icon(Icons.delete),
               onPressed: () {
                 paginaProvider.borrarTodos();
-              })
+              }),
         ],
       ),
       body: Container(
@@ -25,7 +35,8 @@ class Pagina1 extends StatelessWidget {
             itemCount: paginaProvider.usuarioList.length,
             itemBuilder: (_, i) {
               return Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
                   child: _crearItem(context, i, paginaProvider.usuarioList[i]));
             }),
       ),
@@ -52,8 +63,8 @@ class Pagina1 extends StatelessWidget {
 
     TextStyle style = TextStyle(
       color: provider.nuevoUsuario == model
-          ? Colors.white
-          : Colors.black,
+          ? Theme.of(context).selectedRowColor
+          : Theme.of(context).accentColor,
     );
     return Dismissible(
       key: UniqueKey(),
@@ -64,9 +75,8 @@ class Pagina1 extends StatelessWidget {
       },
       child: Card(
         color: provider.nuevoUsuario == model
-            ? Colors.purple.shade700
-            : Colors.white,
-        elevation: 5.0,
+            ? Theme.of(context).secondaryHeaderColor
+            : Theme.of(context).cardColor,
         shape:
             (RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
         child: ListTile(
@@ -106,8 +116,8 @@ class Pagina1 extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: provider.nuevoUsuario == model
-                      ? Colors.white
-                      : Colors.black,
+                      ? Theme.of(context).selectedRowColor
+                      : Theme.of(context).accentColor,
                 ),
               ),
               Text(

@@ -62,4 +62,6 @@ class UsuarioModel {
         "direccion": direccion,
         "edad": edad,
       };
+
+      
 }

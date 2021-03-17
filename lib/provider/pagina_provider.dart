@@ -10,6 +10,9 @@ class PaginaProvider extends ChangeNotifier {
 
   int get paginaActual => _pagina;
 
+  final List<UsuarioModel> _usuarioList = [];
+
+  UsuarioModel _usuario = new UsuarioModel();
   PageController get pageController => _pageController;
 
   set paginaActual(int pagina) {
@@ -18,10 +21,6 @@ class PaginaProvider extends ChangeNotifier {
         duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
     notifyListeners();
   }
-
-  final List<UsuarioModel> _usuarioList = [];
-
-  UsuarioModel _usuario = new UsuarioModel();
 
   int get pagina => _pagina;
 
@@ -63,20 +62,16 @@ class PaginaProvider extends ChangeNotifier {
   }
 
   void guardar() async {
-    //Si seleccion es true modifica el registro
+    _usuarioList.clear();
+
     if (_seleccion && _usuario.id != null) {
       await DBProvider.db.modificar(_usuario);
-      _usuarioList.clear();
-      _usuarioList.addAll(await DBProvider.db.buscarTodos());
     } else {
-      _usuario.id = await DBProvider.db.crearNuevo(_usuario);
-      _usuarioList.add(_usuario);
+      await DBProvider.db.crearNuevo(_usuario);
     }
-
     _usuario = new UsuarioModel();
     _seleccion = false;
     _pagina = 0;
-    notifyListeners();
   }
 
   void borrarTodos() async {
